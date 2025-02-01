@@ -2,9 +2,102 @@
 <html lang="en-us">
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Web Development Portfolio</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: #f4f4f4;
+            }
+
+            .assignment_block {
+                display: grid;
+                grid-template-columns: repeat(9, 1fr);
+                position: relative;
+                top: 110px;
+                background-color: bisque;
+                justify-content: center;
+                align-content: center;
+                gap: 2vw;
+                box-sizing: border-box;
+                max-width: 100%;
+                padding: 15px;
+                overflow-x: auto;
+            }
+
+            .assignment {
+                display: flex;
+                position: relative;
+                background-color:rgb(255, 246, 235);
+                padding: 10px;
+                text-align: center;
+                justify-content: center;
+                align-content: center;
+                border-radius: 10px;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+
+            .assignment:hover {
+                transform: scale(1.05);
+            }
+
+            @media (max-width: 960px) {
+                .assignment_block {
+                    grid-template-columns: repeat(5, 1fr);
+                }
+            }   
+
+            @media (max-width: 480px) {
+                .assignment_block {
+                    grid-template-columns: repeat(1, 1fr);
+                }
+            }
+            
+        </style>
     </head>
+
     <body>
-        <h1>Web Development Portfolio</h1>
+        <h1 style="position: fixed; top: 0px; left: 30px; white-space: nowrap; overflow: auto;">Web Development Portfolio</h1>
+        <hr style="position: fixed; top: 80px; left: 0; width: 100%;">
+
+        <div class="assignment_block">
+            <div class="assignment">
+                <a href="">Assignment 1</a>
+            </div>
+            <div class="assignment">
+                <a href="">Assignment 2</a>
+            </div>
+            <div class="assignment">
+                <a href="">Assignment 3</a>
+            </div>
+            <div class="assignment">
+                <a href="">Assignment 4</a>
+            </div>
+            <div class="assignment">
+                <a href="">Assignment 5</a>
+            </div>
+            <div class="assignment">
+                <a href="">Assignment 6</a>
+            </div>
+            <div class="assignment">
+                <a href="">Assignment 7</a>
+            </div>
+            <div class="assignment">
+                <a href="">Assignment 8</a>
+            </div>
+            <div class="assignment">
+                <a href="">Assignment 9</a>
+            </div>
+        </div>
     </body>
+
+    <footer>
+        <h4 style="position: fixed; bottom: 0px; left: 30px">© Keven Ni</h1>
+        <hr style="position: fixed; bottom: 40px; left: 0; width: 100%;">
+    </footer>
 </html>
