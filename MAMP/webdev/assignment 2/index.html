@@ -52,15 +52,24 @@
     </head>
 
     <body>
-        <div id="container">
-            <h1 id="title">Everything is Awesome</h1>
-            <img id="background", src="images/backgrounds/afternoon.png">
-            <img id="body" src="images/bodies/body3.png">
-            <img id="head" src="images/heads/head3.png">
-            <div id="time">The current time is </div>
-        </div>
+        
        <script>
-            
+            const words = ['Awesome', 'Fantastic', 'Fabulous', 'Superb', 'Perfect', 'Brilliant', 'Coming up Roses'];
+            let greeting = words[parseInt(Math.random() * words.length)];
+
+            let currentTime =  new Date();
+            let hours = currentTime.getHours;
+            let minutes = currentTime.getMinutes;
+
+            document.write(`
+            <div id="container">
+                <h1 id="title">Everything is ${greeting}</h1>
+                <img id="background", src="images/backgrounds/afternoon.png">
+                <img id="body" src="images/bodies/body3.png">
+                <img id="head" src="images/heads/head3.png">
+                <div id="time">The current time is </div>
+            </div>
+            `)
        </script>
     </body>
 </html>
