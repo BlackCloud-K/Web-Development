@@ -32,8 +32,9 @@
                 left: 20px;
                 top: 100px;
                 background-color: #ccc;
-                padding: 20px;
-                border-radius: 20px;
+                padding: 15px;
+                border-radius: 15px;
+                font-size: 110%;
             }
 
             #body {
@@ -58,8 +59,8 @@
             let greeting = words[parseInt(Math.random() * words.length)];
 
             let currentTime =  new Date();
-            let hours = currentTime.getHours;
-            let minutes = currentTime.getMinutes;
+            let hours = currentTime.getHours();
+            let minutes = currentTime.getMinutes();
 
             document.write(`
             <div id="container">
@@ -67,7 +68,7 @@
                 <img id="background", src="images/backgrounds/afternoon.png">
                 <img id="body" src="images/bodies/body3.png">
                 <img id="head" src="images/heads/head3.png">
-                <div id="time">The current time is </div>
+                <div id="time">The current time is ${hours} : ${minutes}. </div>
             </div>
             `)
        </script>
