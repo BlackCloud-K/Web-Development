@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Assignment 2
+        </title>
+        <style>
+            #container {
+                border: 5px solid black;
+                width: 800px;
+                height: 600px;
+                position: relative;
+                margin: auto;
+            }
+
+            #background {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                z-index: 0;
+            }
+
+            #title {
+                position: absolute;
+                z-index: 1;
+                left: 20px;
+            }
+
+            #time {
+                position: absolute;
+                z-index: 1;
+                left: 20px;
+                top: 100px;
+                background-color: #ccc;
+                padding: 20px;
+                border-radius: 20px;
+            }
+
+            #body {
+                position: absolute;
+                z-index: 1;
+                bottom: 0px;
+                right: 0px;
+            }
+            #head {
+                position: absolute;
+                z-index: 1;
+                right: 70px;
+                bottom: 275px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="container">
+            <h1 id="title">Everything is Awesome</h1>
+            <img id="background", src="images/backgrounds/afternoon.png">
+            <img id="body" src="images/bodies/body3.png">
+            <img id="head" src="images/heads/head3.png">
+            <div id="time">The current time is </div>
+        </div>
+       <script>
+            
+       </script>
+    </body>
+</html>
