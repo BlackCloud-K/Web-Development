@@ -56,13 +56,12 @@
         
        <script>
             let lucky_max = 0
-            while (lucky_max < 3){
+            while (isNaN(lucky_max) || lucky_max < 3){
                 lucky_max = prompt("Please enter a number larger than 3")
             }
             
             const words = ['Awesome', 'Fantastic', 'Fabulous', 'Superb', 'Perfect', 'Brilliant', 'Coming up Roses'];
             let greeting = words[parseInt(Math.random() * words.length)];
-
             let currentTime =  new Date();
             let hours = currentTime.getHours();
             let minutes = currentTime.getMinutes().toString().padStart(2, '0');
@@ -72,23 +71,28 @@
             let random_body =  parseInt(Math.random() * 6) + 1
 
             if (hours >= 0 && hours < 6){
-                greeting_time = "Good night"
+                greeting_time = "Good Night"
                 background_time = "night.png"
             }
             if (hours >= 6 && hours < 12){
-                greeting_time = "Good morning"
+                greeting_time = "Good Morning"
                 background_time = "morning.png"
             }
             if (hours >= 12 && hours < 18){
-                greeting_time = "Good afternoon"
+                greeting_time = "Good Afternoon"
                 background_time = "afternoon.png"
             }
             if (hours >= 18 && hours <= 23){
-                greeting_time = "Good evening"
+                greeting_time = "Good Evening"
                 background_time = "evening.png"
             }
             
-            // need fix a bug here
+            let time = ""
+            if (hours > 12){
+                time = time + hours % 12 + ":" + minutes + " pm"
+            }else{
+                time = time + hours + ":" + minutes + "am"
+            }
 
             let luckyNumbers = new Set();
             if (lucky_max >= 3){
@@ -101,16 +105,17 @@
 
             document.write(`
             <div id="container">
-                <h1 id="title">Everything is ${greeting}</h1>
+                <h1 id="title">Everything is ${greeting}!</h1>
                 <img id="background", src="images/backgrounds/${background_time}">
                 <img id="body" src="images/bodies/body${random_body}.png">
                 <img id="head" src="images/heads/head${random_head}.png">
                 <div id="time">
-                    The current time is ${hours}:${minutes} - ${greeting_time}!<br>
+                    The current time is ${time} - ${greeting_time}!<br>
                     Your three lucky numbers are ${num1}, ${num2} and ${num3}
                 </div>
             </div>
             `)
+            
        </script>
     </body>
 </html>
