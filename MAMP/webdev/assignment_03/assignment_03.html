@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Gotta Catch 'em All</title>
+        <style>
+            #left {
+                width: 800px;
+                height: 600px;
+                float: left;
+                position: relative;
+            }
+            #background {
+                width: 100%;
+            }
+            .grass {
+                position: absolute;
+                z-index: 1;
+            }
+            #grass1 {
+                bottom: 0px;
+                left: 0px;
+            }
+            #grass2 {
+                bottom: 0px;
+                left: 275px;
+            }
+            #grass3 {
+                bottom: 0px;
+                right: 0px;
+            }
+            .grass:hover {
+                background-color: rgba(255, 255, 0, 0.5);
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <div id="left">
+                <!-- background + grasses -->
+                <img id="background" src="images/environment_forestbackground.png">
+                <img id="grass1" class="grass" src="images/grass.png">
+                <img id="grass2" class="grass" src="images/grass.png">
+                <img id="grass3" class="grass" src="images/grass.png">
+            </div>
+            <div id="right">
+                <!-- instructions & output (text) + play again button -->
+                <h1>Gotta Catch 'em All</h1>
+                <p>Instructions ......</p>
+                <h2>Results</h2>
+                <p id="results">You caught a ...</p>
+                <p>Pokeballs left: <span id="pokeballs_left">5</span></p>
+                <p>Pokemon caught: <span id="pokemon_caught">0</span></p>
+                <button id="button_playagain" style="display: none;">Play Again</button>
+            </div>
+
+        </div>
+
+        <script>
+            // define all DOM elements that we plan on using
+            const grass1 = document.getElementById('grass1');
+            const grass2 = document.getElementById('grass2');
+            const grass3 = document.getElementById('grass3');
+            const results = document.getElementById('results');
+            const pokeballs_left = document.getElementById('pokeballs_left');
+            const pokemon_caught = document.getElementById('pokemon_caught');
+            const button_playagain = document.getElementById('button_playagain');
+
+            // variables to keep track of game state
+            let pokeballsLeft = 5;
+            let pokemonCaught = 0;
+
+            // reset button 
+            button_playagain.onclick = function() {
+                // reset the grasses 
+                grass1.src = 'images/grass.png';
+                grass2.src = 'images/grass.png';
+                grass3.src = 'images/grass.png';
+
+                // hide the play again button
+                button_playagain.style.display = 'none';
+            }
+
+            // work with grass1
+            grass1.onclick = function() {
+            
+                // the user loses a pokeball
+                pokeballsLeft -= 1;
+                pokeballs_left.innerText = pokeballsLeft;
+
+                // pick which option we should use
+                let chance = Math.random(); // 0.0 - 1.0
+
+                // 33% of a pokemon
+                if (chance > 0.5) {
+                    grass1.src = 'images/pikachu.png';         
+
+                    pokemonCaught += 1;
+                    pokemon_caught.innerText = pokemonCaught;   
+                }
+
+                // 33% of 2 pokeballs 
+                else if (chance >= 0.1) {
+                    grass1.src = 'images/pokeballs.png';                            
+                    pokeballsLeft += 2;
+                    pokeballs_left.innerText = pokeballsLeft;
+                }
+
+                // 33% of nothing
+                else {
+                    grass1.src = '';                            
+                }   
+
+
+                // show the reset button
+                button_playagain.style.display = 'block';         
+            }
+
+
+
+        </script>
+    </body>
+</html>
