@@ -60,15 +60,53 @@
 
             let currentTime =  new Date();
             let hours = currentTime.getHours();
-            let minutes = currentTime.getMinutes().toString().padStart(2, '0');;
+            let minutes = currentTime.getMinutes().toString().padStart(2, '0');
+            let greeting_time = ""
+            let background_time= ""
+            let lucky_max = 0
+            let random_head =  parseInt(Math.random() * 6) + 1
+            let random_body =  parseInt(Math.random() * 6) + 1
+
+            if (hours >= 0 && hours < 6){
+                greeting_time = "Good night"
+                background_time = "night.png"
+            }
+            if (hours >= 6 && hours < 12){
+                greeting_time = "Good morning"
+                background_time = "morning.png"
+            }
+            if (hours >= 12 && hours < 18){
+                greeting_time = "Good afternoon"
+                background_time = "afternoon.png"
+            }
+            if (hours >= 18 && hours <= 23){
+                greeting_time = "Good evening"
+                background_time = "evening.png"
+            }
+            
+            // need fix a bug here
+            window.onload = function () {
+                while (lucky_max < 3){
+                    lucky_max = parseInt(prompt("Enter the maximum lucky number (must be at least 3):"));
+                }
+            }
+            let luckyNumbers = new Set();
+            while (luckyNumbers.size < 3) {
+                let randNum = Math.floor(Math.random() * lucky_max) + 1;
+                luckyNumbers.add(randNum);
+            }
+            let [num1, num2, num3] = [...luckyNumbers];
 
             document.write(`
             <div id="container">
                 <h1 id="title">Everything is ${greeting}</h1>
-                <img id="background", src="images/backgrounds/afternoon.png">
-                <img id="body" src="images/bodies/body3.png">
-                <img id="head" src="images/heads/head3.png">
-                <div id="time">The current time is ${hours}:${minutes}. </div>
+                <img id="background", src="images/backgrounds/${background_time}">
+                <img id="body" src="images/bodies/body${random_body}.png">
+                <img id="head" src="images/heads/head${random_head}.png">
+                <div id="time">
+                    The current time is ${hours}:${minutes} - ${greeting_time}!<br>
+                    Your three lucky numbers are ${num1}, ${num2} and ${num3}
+                </div>
             </div>
             `)
        </script>
