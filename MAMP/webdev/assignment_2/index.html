@@ -55,6 +55,11 @@
     <body>
         
        <script>
+            let lucky_max = 0
+            while (lucky_max < 3){
+                lucky_max = prompt("Please enter a number larger than 3")
+            }
+            
             const words = ['Awesome', 'Fantastic', 'Fabulous', 'Superb', 'Perfect', 'Brilliant', 'Coming up Roses'];
             let greeting = words[parseInt(Math.random() * words.length)];
 
@@ -63,7 +68,6 @@
             let minutes = currentTime.getMinutes().toString().padStart(2, '0');
             let greeting_time = ""
             let background_time= ""
-            let lucky_max = 0
             let random_head =  parseInt(Math.random() * 6) + 1
             let random_body =  parseInt(Math.random() * 6) + 1
 
@@ -85,15 +89,13 @@
             }
             
             // need fix a bug here
-            window.onload = function () {
-                while (lucky_max < 3){
-                    lucky_max = parseInt(prompt("Enter the maximum lucky number (must be at least 3):"));
-                }
-            }
+
             let luckyNumbers = new Set();
-            while (luckyNumbers.size < 3) {
-                let randNum = Math.floor(Math.random() * lucky_max) + 1;
-                luckyNumbers.add(randNum);
+            if (lucky_max >= 3){
+                while (luckyNumbers.size < 3) {
+                    let randNum = Math.floor(Math.random() * lucky_max) + 1;
+                    luckyNumbers.add(randNum);
+                }
             }
             let [num1, num2, num3] = [...luckyNumbers];
 
