@@ -33,6 +33,7 @@
             }
         </style>
     </head>
+
     <body>
         <div id="container">
             <div id="left">
@@ -46,8 +47,8 @@
                 <!-- instructions & output (text) + play again button -->
                 <h1>Gotta Catch 'em All</h1>
                 <p>Instructions ......</p>
-                <h2>Results</h2>
-                <p id="results">You caught a ...</p>
+                <h3>Results</h3>
+                <h3 id="results">You caught a ...</h3>
                 <p>Pokeballs left: <span id="pokeballs_left">5</span></p>
                 <p>Pokemon caught: <span id="pokemon_caught">0</span></p>
                 <button id="button_playagain" style="display: none;">Play Again</button>
@@ -68,6 +69,64 @@
             // variables to keep track of game state
             let pokeballsLeft = 5;
             let pokemonCaught = 0;
+            let selected = false;
+
+            // possible pokemon
+            const pokemon = [
+                {name:'Pikachu', image:'images/pikachu.png'}, 
+                {name:'Bulbasaur', image:'images/bulbasaur.png'},
+                {name:'Charmander', image:'images/charmander.png'},
+                {name:'Eevee', image:'images/eevee.png'},
+                {name:'Squirtle', image:'images/squirtle.png'}
+            ]
+
+            let play = function(grass_selected){
+                if (selected == false){
+                    // the user loses a pokeball
+                    pokeballsLeft -= 1;
+                    pokeballs_left.innerText = pokeballsLeft;
+
+                    // pick which option we should use
+                    let chance = Math.random(); // 0.0 - 1.0
+
+                    // 33% of a pokemon
+                    if (chance > 0.66) {
+                        pokemon_index = parseInt(Math.random() * pokemon.length)
+                        pokemon_name = pokemon[pokemon_index].name
+                        grass_selected.src = pokemon[pokemon_index].image;   
+                        results.innerText = "You caught a(n) " + pokemon_name + '!'  
+
+                        pokemonCaught += 1;
+                        pokemon_caught.innerText = pokemonCaught;   
+                    }
+
+                    // 33% of 2 pokeballs 
+                    else if (chance >= 0.33) {
+                        grass_selected.src = 'images/pokeballs.png';                            
+                        pokeballsLeft += 2;
+                        pokeballs_left.innerText = pokeballsLeft;
+                        results.innerText = "You found two Pokeballs!"  
+                    }
+
+                    // 33% of nothing
+                    else {
+                        grass_selected.src = '';
+                        results.innerText = "Nothing here!"                       
+                    }   
+
+                    // show the reset button
+                    button_playagain.style.display = 'block';
+                    selected = true;
+                }
+
+                if (pokeballsLeft <= 0){
+                    // game over
+                    results.innerText = "Game Over!";  
+                    results.style.color = 'red';
+                    selected = true;
+                    button_playagain.style.display = 'none';
+                }
+            }
 
             // reset button 
             button_playagain.onclick = function() {
@@ -78,45 +137,20 @@
 
                 // hide the play again button
                 button_playagain.style.display = 'none';
+                selected = false;
             }
 
-            // work with grass1
+            // work with grass
             grass1.onclick = function() {
-            
-                // the user loses a pokeball
-                pokeballsLeft -= 1;
-                pokeballs_left.innerText = pokeballsLeft;
-
-                // pick which option we should use
-                let chance = Math.random(); // 0.0 - 1.0
-
-                // 33% of a pokemon
-                if (chance > 0.5) {
-                    grass1.src = 'images/pikachu.png';         
-
-                    pokemonCaught += 1;
-                    pokemon_caught.innerText = pokemonCaught;   
-                }
-
-                // 33% of 2 pokeballs 
-                else if (chance >= 0.1) {
-                    grass1.src = 'images/pokeballs.png';                            
-                    pokeballsLeft += 2;
-                    pokeballs_left.innerText = pokeballsLeft;
-                }
-
-                // 33% of nothing
-                else {
-                    grass1.src = '';                            
-                }   
-
-
-                // show the reset button
-                button_playagain.style.display = 'block';         
+                play(grass1);         
             }
-
-
-
+            grass2.onclick = function() {
+                play(grass2);         
+            }
+            grass3.onclick = function() {
+                play(grass3);         
+            }
+            
         </script>
     </body>
 </html>
