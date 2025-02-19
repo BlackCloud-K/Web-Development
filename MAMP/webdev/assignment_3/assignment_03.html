@@ -42,18 +42,26 @@
                 <img id="grass1" class="grass" src="images/grass.png">
                 <img id="grass2" class="grass" src="images/grass.png">
                 <img id="grass3" class="grass" src="images/grass.png">
+
+                <div id="customModal" style="display: none; position: absolute; width: 300px; height: 250px; top: 30%; left: 50%; transform: translate(-50%, -50%);
+                    background: white; box-shadow: 0 0 10px rgba(0,0,0,0.3); text-align: center;">
+                    <h3>Result History</h3>
+                    <div id="history_list" style="position: fixed; top: 40px; left: 20%;text-align: center; overflow-y: auto; max-height: 150px; padding: 0px 10px 10px 10px"></div>
+                    <button onclick="confirmReload()" style="position: absolute; bottom: 10px; left: 50px">Confirm Restart</button>
+                    <button onclick="closeModal()" style="position: absolute; bottom: 10px; right: 50px">Cancel</button>
+                </div>
             </div>
             <div id="right">
                 <!-- instructions & output (text) + play again button -->
                 <h1>Gotta Catch 'em All</h1>
-                <p>Instructions ......</p>
-                <h3>Results</h3>
+                <!-- <p>Instructions ......</p> -->
+                <button onclick="openModal()">Restart The Game</button>
+                <h3>Results:</h3>
                 <h3 id="results">You caught a ...</h3>
                 <p>Pokeballs left: <span id="pokeballs_left">5</span></p>
                 <p>Pokemon caught: <span id="pokemon_caught">0</span></p>
                 <button id="button_playagain" style="display: none;">Play Again</button>
             </div>
-
         </div>
 
         <script>
@@ -70,6 +78,7 @@
             let pokeballsLeft = 5;
             let pokemonCaught = 0;
             let selected = false;
+            let history = [];
 
             // possible pokemon
             const pokemon = [
@@ -93,8 +102,10 @@
                     if (chance > 0.66) {
                         pokemon_index = parseInt(Math.random() * pokemon.length)
                         pokemon_name = pokemon[pokemon_index].name
-                        grass_selected.src = pokemon[pokemon_index].image;   
-                        results.innerText = "You caught a(n) " + pokemon_name + '!'  
+                        grass_selected.src = pokemon[pokemon_index].image;
+                        result = "You caught a(n) " + pokemon_name + '!';
+                        history.push(result);
+                        results.innerText = result;
 
                         pokemonCaught += 1;
                         pokemon_caught.innerText = pokemonCaught;   
@@ -105,13 +116,17 @@
                         grass_selected.src = 'images/pokeballs.png';                            
                         pokeballsLeft += 2;
                         pokeballs_left.innerText = pokeballsLeft;
-                        results.innerText = "You found two Pokeballs!"  
+                        result = "You found two Pokeballs!";
+                        history.push(result);
+                        results.innerText = result;   
                     }
 
                     // 33% of nothing
                     else {
                         grass_selected.src = '';
-                        results.innerText = "Nothing here!"                       
+                        result = "Nothing here!";
+                        history.push(result);
+                        results.innerText = result;                     
                     }   
 
                     // show the reset button
@@ -151,6 +166,30 @@
                 play(grass3);         
             }
             
+            // Reloage page
+            reloadPage = function(){
+                location.reload();
+            }
+            
+            function openModal() {
+                let historyDiv = document.getElementById("history_list");
+                historyDiv.innerHTML = "";
+
+                history.slice().reverse().forEach(item => {
+                    let p = document.createElement("p");
+                    p.textContent = item;
+                    historyDiv.appendChild(p); 
+                });
+                document.getElementById("customModal").style.display = "block";
+            }
+
+            function closeModal() {
+                document.getElementById("customModal").style.display = "none";
+            }
+
+            function confirmReload() {
+                location.reload();
+            }
         </script>
     </body>
 </html>
