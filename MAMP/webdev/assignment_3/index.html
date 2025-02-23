@@ -239,7 +239,7 @@
             function drawHistogram() {
                 let header = document.createElement("h3")
                 header.innerText = "Pokemon Caught"
-                let maxCount = Math.max(...Object.values(pokemon_dict)); // 计算最大值
+                let maxCount = Math.max(...Object.values(pokemon_dict));
                 let container = document.getElementById("histogram");
                 container.innerHTML = "";
                 container.appendChild(header)
@@ -256,9 +256,9 @@
 
                     let bar = document.createElement("div");
                     bar.className = "bar";
-                    bar.style.width = `${(count / maxCount) * 300}px`; // 计算相对宽度
-                    bar.style.backgroundColor = colors[pokemon]; // 颜色
-                    bar.textContent = count; // 显示数字
+                    bar.style.width = `${(count / maxCount) * 300}px`;
+                    bar.style.backgroundColor = colors[pokemon];
+                    bar.textContent = count;
 
                     barContainer.appendChild(label);
                     barContainer.appendChild(bar);
