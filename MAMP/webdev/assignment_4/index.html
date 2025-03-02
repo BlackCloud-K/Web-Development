@@ -3,20 +3,105 @@
   <head>
     <title>Design Your own Hogwarts!</title>
     <style type="text/css">
+      .map {
+        width: 320px;
+        height: 320px;
+        border: 1px black solid;
+        float: left;
+        padding: 0px;
+        display: flex;         
+        flex-wrap: wrap;
+      }
+
+      .map div {
+        width: 32px;
+        height: 32px;
+        box-sizing: border-box;
+      }
+
+      .map div:hover {
+        outline: 1px solid blue;
+        cursor: pointer;
+      }
+
+      .display {
+        float: left;
+        border: 1px black solid;
+        margin-left: 30px;
+        width: 440px;
+        height: 300px;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        padding: 10px;
+        max-height: 320px; 
+        overflow-y: auto;
+      }
+
+      .display img {
+        width: 32px; 
+        height: 32px;
+        cursor: pointer;
+        object-fit: cover;
+      }
+
+      .display img:hover {
+        outline: 2px solid yellow;
+      }
+
+      .selected {
+        outline: 2px solid rgb(51, 235, 51);
+      }
 
     </style>
   </head>
 
   <body>
     <h1>Design Your Own Hogwarts!</h1>
-
+    <p>Click a tile to select it, and click on the map to place the tile.</p>
     <!-- load in the image array file - this makes available a new array of all image filenames that you can use for this project -->
     <!-- Assets courtesy of Crawl Stone Soup: https://github.com/crawl/tiles -->
     <script src="image_array.js"></script>
 
     <!-- write your code here -->
-    <script>
+    <div class="map">
+      <p></p>
+    </div>
 
+    <div class="display">
+      <p></p>
+    </div>
+
+    <script>
+      const mapContainer = document.querySelector(".map");
+      for (let i = 0; i < 100; i++) {
+        const tile = document.createElement("div");
+        mapContainer.appendChild(tile);
+
+        tile.addEventListener("click", function() {
+          if (selectedImage) {
+            tile.style.backgroundImage = `url(${selectedImage.src})`;
+            tile.style.backgroundSize = "cover";
+          }
+        });
+      }
+
+      const rightColumn = document.querySelector(".display");
+        let selectedImage = null; 
+
+        array_library.forEach(src => {
+          const img = document.createElement("img");
+          img.src = src;
+          rightColumn.appendChild(img);
+
+          img.onclick = function() {
+            const allImages = document.querySelectorAll(".display img");
+            allImages.forEach(imgEl => imgEl.classList.remove("selected"));
+
+            img.classList.add("selected");
+            selectedImage = img;
+          };
+        });
     </script>
 
   </body>
