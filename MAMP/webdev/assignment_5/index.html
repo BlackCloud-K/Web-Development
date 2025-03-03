@@ -81,6 +81,7 @@
 
         <div id="modal_add_event" class="hidden">
             <h2>Add New Event</h2>
+            <p id="warning" class="hidden">Please Enter all Information!!!</p>
             <form>
                 <div>
                     <label for="modal_add_event_title">Title:</label>
@@ -116,6 +117,8 @@
             const button_add_event = document.querySelector('#button_add_event');
             const modal_add_event = document.querySelector('#modal_add_event');
             const modal_add_event_cancel = document.getElementById('modal_add_event_cancel');
+            const season_filter = document.querySelector("#filter");
+            const warning = document.querySelector('#warning');
 
             button_add_event.onclick = function(event) {
                 modal_add_event.classList.remove('hidden');
@@ -137,27 +140,39 @@
 
                 console.log(title, season, content);
 
-                // create a new to-do item 
-                /*
-                <div class="item winter" data-content="In the mountains">
-                    Title
-                </div>
-                */
-                const el = document.createElement('div');
-                el.classList.add('item');
-                el.classList.add(season);
-                el.innerText = title;
-                el.dataset.content = content;
+                if (title != "" && season != "" && content != ""){
+                    // create a new to-do item 
+                    /*
+                    <div class="item winter" data-content="In the mountains">
+                        Title
+                    </div>
+                    */
+                    const el = document.createElement('div');
+                    el.classList.add('item');
+                    el.classList.add(season);
+                    el.innerText = title;
+                    el.dataset.content = content;
 
-                // add to-do item to the DOM
-                document.getElementById('existing_items').appendChild(el);
+                    // add to-do item to the DOM
+                    document.getElementById('existing_items').appendChild(el);
 
-                // set up a click handler
-                el.onclick = function(event) {
-                
-                    console.log(event.currentTarget.dataset.content);
+                    // set up a click handler
+                    el.onclick = function(event) {
+                    
+                        console.log(event.currentTarget.dataset.content);
+                    }
+                }
+                else{
+                    let warning = document.createElement('p');
+                    warning.innerText = "Please enter all information!!";
+                    modal_add_event.appendChild(warning);
                 }
             }
+
+            season_filter.addEventListener('change', function(event){
+                const body = document.querySelector("body")
+
+            });
         </script>
     </body>
 </html>
