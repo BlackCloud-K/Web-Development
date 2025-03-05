@@ -5,6 +5,7 @@
         <style>
             body {
                 background-image: url('images/corkboard.jpg');
+                padding-left: 20px;
             }
             #filter {
                 position: absolute;
@@ -17,6 +18,8 @@
                 right: 20px;
                 width: 50px;
                 height: 50px;
+                display: flex;
+                
             }
             #button_add_event:hover {
                 bottom: 15px;
@@ -27,15 +30,17 @@
 
             #modal_add_event {
                 box-sizing: border-box;
-                padding: 20px;
+                padding: 25px;
                 width: 300px;
-                height: 400px;
-                background-color: #fff;            
+                height: 380px;
+                background-color: #fff; 
+                border: 1px solid black;           
                 position: absolute;
                 top: 50%;
                 left: 50%;
                 margin-left: -150px;
                 margin-top: -200px;
+                z-index: 100;
             }
             .hidden {
                 display: none;
@@ -46,6 +51,12 @@
                 border: 1px solid black;
                 float: left;
                 margin: 10px;
+                padding: 10px;
+            }
+            #save_cancel {
+                position: absolute;
+                margin: 10px;
+                left: 28%
             }
             .spring {
                 background-color: lightgreen;                
@@ -59,6 +70,7 @@
             .winter {
                 background-color: lightblue;
             }
+            
         </style>
     </head>
     <body>
@@ -80,14 +92,14 @@
         <img id="button_add_event" src="images/add_button.png"></img>
 
         <div id="modal_add_event" class="hidden">
-            <h2>Add New Event</h2>
+            <h2 style="left: 10%">Add New Event</h2>
             <p id="warning" class="hidden">Please Enter all Information!!!</p>
-            <form>
-                <div>
+            <form id="todo_form">
+                <div style="margin: 5px;">
                     <label for="modal_add_event_title">Title:</label>
                     <input type="text" id="modal_add_event_title">
                 </div>
-                <div>
+                <div style="margin: 5px;">
                     <label for="modal_add_event_season">Season</label>
                     <select id="modal_add_event_season">
                         <option value="">Select a season</option>
@@ -97,11 +109,11 @@
                         <option value="winter">Winter</option>
                     </select>
                 </div>
-                <div>
-                    <label for="modal_add_event_content">Content</label>
-                    <textarea id="modal_add_event_content"></textarea>                    
+                <div style="margin: 5px;">
+                    <label for="modal_add_event_content">Content:</label> <br>
+                    <textarea id="modal_add_event_content" style="width: 230px; height: 100px;"></textarea>                    
                 </div>
-                <div>
+                <div id="save_cancel">
                     <button id="modal_add_event_save">Save</button>
                     <button id="modal_add_event_cancel">Cancel</button>
                 </div>
@@ -119,6 +131,7 @@
             const modal_add_event_cancel = document.getElementById('modal_add_event_cancel');
             const season_filter = document.querySelector("#filter");
             const warning = document.querySelector('#warning');
+            let date = new Date();
 
             button_add_event.onclick = function(event) {
                 modal_add_event.classList.remove('hidden');
@@ -126,6 +139,7 @@
             modal_add_event_cancel.onclick = function(event) {
                 event.preventDefault();
                 modal_add_event.classList.add('hidden');
+                warning.classList.add('hidden')
             }
             modal_add_event_save.onclick = function(event) {
                 event.preventDefault();
@@ -148,24 +162,50 @@
                     </div>
                     */
                     const el = document.createElement('div');
+                    const del = document.createElement('p');
+                    
                     el.classList.add('item');
                     el.classList.add(season);
                     el.innerText = title;
                     el.dataset.content = content;
+                    el.style.position = "relative";
+                    warning.classList.add('hidden');
+
+                    let currentTime = date.toLocaleString();
+                    el.dataset.createTime = currentTime;
+                    el.dataset.accTime = currentTime;
 
                     // add to-do item to the DOM
                     document.getElementById('existing_items').appendChild(el);
+                    
+                    // Set del
+                    del.innerText = "X";
+                    del.style.top = "3px";
+                    del.style.right = "3px";
+                    del.style.position = "absolute";
+                    del.style.margin = "0";
+                    del.classList.add('hidden')
+                    del.style.cursor = "pointer";
 
+                    el.appendChild(del);
                     // set up a click handler
                     el.onclick = function(event) {
-                    
+                        console.log(del);
                         console.log(event.currentTarget.dataset.content);
                     }
+                    el.addEventListener("mouseenter", function(event){
+                        del.classList.remove('hidden')
+                    })
+                    el.addEventListener("mouseleave", function(event){
+                        del.classList.add('hidden')
+                    })
+                    del.onclick = function(event){
+                        el.remove();
+                    }
+                    document.getElementById("todo_form").reset();
                 }
                 else{
-                    let warning = document.createElement('p');
-                    warning.innerText = "Please enter all information!!";
-                    modal_add_event.appendChild(warning);
+                    warning.classList.remove('hidden')
                 }
             }
 
