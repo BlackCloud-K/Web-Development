@@ -112,7 +112,7 @@
              modal box for viewing an event -->
 
         <select id="filter">
-            <option value="">Select a season</option>
+            <option value="show_all">Show All</option>
             <option value="spring">Spring</option>
             <option value="summer">Summer</option>
             <option value="fall">Fall</option>
@@ -123,7 +123,7 @@
 
         <div id="modal_add_event" class="hidden">
             <h2 style="left: 10%">Add New Event</h2>
-            <p id="warning" class="hidden">Please Enter all Information!!!</p>
+            <p id="warning" class="hidden" style="color: red;">Please Enter all Information!!!</p>
             <form id="todo_form">
                 <div style="margin: 5px;">
                     <label for="modal_add_event_title">Title:</label>
@@ -179,12 +179,14 @@
             const info_content = document.getElementById("content");
             const event_title = document.getElementById("event_title");
             let date = new Date();
+            let filter = document.getElementById("filter");
 
             button_add_event.onclick = function(event) {
                 modal_add_event.classList.remove('hidden');
             }
             modal_add_event_cancel.onclick = function(event) {
                 event.preventDefault();
+                document.getElementById("todo_form").reset();
                 modal_add_event.classList.add('hidden');
                 warning.classList.add('hidden')
             }
@@ -250,9 +252,12 @@
                         del.classList.add('hidden')
                     })
                     del.onclick = function(event){
+                        event.stopPropagation();
                         el.remove();
                     }
                     document.getElementById("todo_form").reset();
+                    filter.value = "show_all";
+                    change_season();
 
                     el.onclick = function(event){
                         info.classList.remove('hidden');
@@ -266,16 +271,29 @@
                         let date = new Date();
                         el.dataset.accTime = date.toLocaleString();
                     }
+                    modal_add_event.classList.add('hidden');
                 }
                 else{
                     warning.classList.remove('hidden')
                 }
             }
 
-            season_filter.addEventListener('change', function(event){
-                const body = document.querySelector("body")
-
-            });
+            season_filter.addEventListener('change', change_season);
+            function change_season(){
+                const existing_items = document.querySelector("#existing_items").children;
+                let season_now = season_filter.value;
+                for (let i of existing_items){
+                    if (season_now == "show_all"){
+                        i.classList.remove('hidden');
+                    } else{
+                        if (i.dataset.season == season_now){
+                            i.classList.remove('hidden');
+                        } else{
+                            i.classList.add('hidden');
+                        }
+                    }
+                }
+            }
 
             close.onclick = function(event){
                 info.classList.add('hidden');
