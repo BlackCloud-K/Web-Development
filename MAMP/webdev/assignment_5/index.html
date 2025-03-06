@@ -42,6 +42,28 @@
                 margin-top: -200px;
                 z-index: 100;
             }
+
+            #info {
+                box-sizing: border-box;
+                padding: 25px;
+                width: 300px;
+                height: 380px;
+                background-color: #fff; 
+                border: 1px solid black;           
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                margin-left: -150px;
+                margin-top: -200px;
+                z-index: 100;
+            }
+            #content {
+                width: 230px;
+                height: 100px;
+                overflow: hidden;
+                word-wrap: break-word;
+                white-space: normal;
+                }
             .hidden {
                 display: none;
             }
@@ -52,6 +74,9 @@
                 float: left;
                 margin: 10px;
                 padding: 10px;
+                overflow: hidden;
+                white-space: nowrap; 
+                text-overflow: ellipsis; 
             }
             #save_cancel {
                 position: absolute;
@@ -70,7 +95,12 @@
             .winter {
                 background-color: lightblue;
             }
-            
+            #event_title {
+                width: 230px;
+                overflow: hidden;
+                white-space: nowrap; 
+                text-overflow: ellipsis; 
+            }
         </style>
     </head>
     <body>
@@ -120,6 +150,16 @@
             </form>
         </div>
 
+        <div id="info" class="hidden">
+            <h2 id="event_title" style="left: 10%; margin-top: 5px;">Event:</h2>
+            <p id="season">Season: </p>
+            <p id="create">Creaet time:</p>
+            <p id="access">Last access time:</p>
+            <p>Content:</p>
+            <div id="content"></div>                    
+            <p id="close_info" style="position: absolute; top: 10px; right: 20px; margin: 0; font-size: x-large; cursor: pointer;">x</p>
+        </div>
+
         <div id="existing_items">            
 
         </div>
@@ -131,6 +171,13 @@
             const modal_add_event_cancel = document.getElementById('modal_add_event_cancel');
             const season_filter = document.querySelector("#filter");
             const warning = document.querySelector('#warning');
+            const close = document.getElementById("close_info");
+            const info = document.getElementById("info");
+            const create = document.getElementById("create");
+            const season_show = document.getElementById("season");
+            const access = document.getElementById("access");
+            const info_content = document.getElementById("content");
+            const event_title = document.getElementById("event_title");
             let date = new Date();
 
             button_add_event.onclick = function(event) {
@@ -171,9 +218,12 @@
                     el.style.position = "relative";
                     warning.classList.add('hidden');
 
+                    let date = new Date();
                     let currentTime = date.toLocaleString();
                     el.dataset.createTime = currentTime;
                     el.dataset.accTime = currentTime;
+                    el.dataset.season = season;
+                    el.dataset.title = title;
 
                     // add to-do item to the DOM
                     document.getElementById('existing_items').appendChild(el);
@@ -203,6 +253,19 @@
                         el.remove();
                     }
                     document.getElementById("todo_form").reset();
+
+                    el.onclick = function(event){
+                        info.classList.remove('hidden');
+                        info_content.innerText = el.dataset.content;
+                        season_show.innerText = "Season: " + el.dataset.season;
+                        access.innerText = "Access Time: " + el.dataset.accTime;
+                        create.innerText = "Create Time: " + el.dataset.createTime;
+                        event_title.innerText = "Event: " + el.dataset.title;
+
+                        // reset acc time
+                        let date = new Date();
+                        el.dataset.accTime = date.toLocaleString();
+                    }
                 }
                 else{
                     warning.classList.remove('hidden')
@@ -213,6 +276,10 @@
                 const body = document.querySelector("body")
 
             });
+
+            close.onclick = function(event){
+                info.classList.add('hidden');
+            }
         </script>
     </body>
 </html>
