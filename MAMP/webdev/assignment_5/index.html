@@ -188,6 +188,7 @@
             <p>Content:</p>
             <div id="content"></div>                    
             <p id="close_info" style="position: absolute; top: 10px; right: 20px; margin: 0; font-size: x-large; cursor: pointer;">x</p>
+            <button id="delete_el">Delete</button>
         </div>
 
         <div id="existing_items">            
@@ -211,6 +212,7 @@
             let date = new Date();
             let filter = document.getElementById("filter");
             const completion = document.getElementById("completion_filter");
+            const delete_el = document.getElementById("delete_el");
 
             button_add_event.onclick = function(event) {
                 modal_add_event.classList.remove('hidden');
@@ -274,7 +276,7 @@
                     //set Completion
                     let completion_mark = document.createElement('p');
                     completion_mark.innerText = el.dataset.completion;
-                    completion_mark.style = "position: absolute; bottom: 0px; left: 4px";
+                    completion_mark.style = "position: absolute; bottom: 0px; left: 7px";
                     el.appendChild(completion_mark);
 
                     el.appendChild(del);
@@ -292,6 +294,7 @@
                     del.onclick = function(event){
                         event.stopPropagation();
                         el.remove();
+                        info.classList.add('hidden');
                     }
                     document.getElementById("todo_form").reset();
                     filter.value = "show_all";
@@ -309,6 +312,17 @@
                             el.dataset.completion = completion.value;
                             completion_mark.innerText = completion.value;
                             change_season();
+
+                            if (completion.value == "Completed"){
+                                event_title.style.color = "green";
+                            }else{
+                                event_title.style.color = "black";
+                            }
+                        }
+
+                        delete_el.onclick = function(){
+                            el.remove();
+                            info.classList.add('hidden');
                         }
 
                         // reset acc time
