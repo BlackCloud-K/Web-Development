@@ -101,6 +101,30 @@
                 white-space: nowrap; 
                 text-overflow: ellipsis; 
             }
+            .move-btn {
+                position: absolute;
+                display: none; 
+                cursor: pointer;
+                font-size: 12px;
+                padding: 4px 6px;
+                background-color: #666;
+                color: #fff;
+                border: none;
+                border-radius: 4px;
+            }
+
+            .item:hover .move-btn {
+                display: inline-block;
+            }
+
+            .move-up {
+                bottom: 50px;
+                left: 4px;
+                }
+            .move-down {
+                bottom: 50px;
+                right: 4px;
+            }
         </style>
     </head>
     <body>
@@ -152,6 +176,10 @@
 
         <div id="info" class="hidden">
             <h2 id="event_title" style="left: 10%; margin-top: 5px;">Event:</h2>
+            <select id="completion_filter">
+                <option value="Not Completed">Not completed</option>
+                <option value="Completed">Completed</option>
+            </select>
             <p id="season">Season: </p>
             <p id="create">Creaet time:</p>
             <p id="access">Last access time:</p>
@@ -180,6 +208,7 @@
             const event_title = document.getElementById("event_title");
             let date = new Date();
             let filter = document.getElementById("filter");
+            const completion = document.getElementById("completion_filter");
 
             button_add_event.onclick = function(event) {
                 modal_add_event.classList.remove('hidden');
@@ -226,6 +255,7 @@
                     el.dataset.accTime = currentTime;
                     el.dataset.season = season;
                     el.dataset.title = title;
+                    el.dataset.completion = "Not Completed";
 
                     // add to-do item to the DOM
                     document.getElementById('existing_items').appendChild(el);
@@ -238,6 +268,12 @@
                     del.style.margin = "0";
                     del.classList.add('hidden')
                     del.style.cursor = "pointer";
+
+                    //set Completion
+                    let completion_mark = document.createElement('p');
+                    completion_mark.innerText = el.dataset.completion;
+                    completion_mark.style = "position: absolute; bottom: 0px; left: 4px";
+                    el.appendChild(completion_mark);
 
                     el.appendChild(del);
                     // set up a click handler
@@ -267,11 +303,58 @@
                         create.innerText = "Create Time: " + el.dataset.createTime;
                         event_title.innerText = "Event: " + el.dataset.title;
 
+                        completion.onchange = function(event){
+                            el.dataset.completion = completion.value;
+                            completion_mark.innerText = completion.value;
+                        }
+
                         // reset acc time
                         let date = new Date();
                         el.dataset.accTime = date.toLocaleString();
                     }
                     modal_add_event.classList.add('hidden');
+
+                    const btnUp = document.createElement("button");
+                    btnUp.textContent = "<";
+                    btnUp.classList.add("move-btn", "move-up");
+
+                    const btnDown = document.createElement("button");
+                    btnDown.textContent = ">";
+                    btnDown.classList.add("move-btn", "move-down");
+
+                    el.appendChild(btnUp);
+                    el.appendChild(btnDown);
+
+                    btnDown.addEventListener("click", (event) => {
+                        event.stopPropagation();
+                        const nextVisible = getNextVisibleSibling(el);
+                        if (nextVisible) {
+                            existing_items.insertBefore(el, nextVisible.nextElementSibling);
+                        } else {
+                            existing_items.appendChild(el);
+                        }
+                    });
+
+                    btnUp.addEventListener("click", (event) => {
+                        event.stopPropagation();
+                        const prevVisible = getPrevVisibleSibling(el);
+                        if (prevVisible) {
+                            existing_items.insertBefore(el, prevVisible);
+                        }
+                    });
+
+                    el.addEventListener("mouseenter", () => {
+                        const prevVisible = getPrevVisibleSibling(el);
+                        const nextVisible = getNextVisibleSibling(el);
+                        
+                        btnUp.style.display = prevVisible ? "inline-block" : "none";
+                        btnDown.style.display = nextVisible ? "inline-block" : "none";
+                    });
+
+                    el.addEventListener("mouseleave", () => {
+                        btnUp.style.display = "none";
+                        btnDown.style.display = "none";
+                    });
                 }
                 else{
                     warning.classList.remove('hidden')
@@ -298,6 +381,23 @@
             close.onclick = function(event){
                 info.classList.add('hidden');
             }
+
+            function getPrevVisibleSibling(el) {
+                let sibling = el.previousElementSibling;
+                while (sibling && sibling.classList.contains("hidden")) {
+                    sibling = sibling.previousElementSibling;
+                }
+                return sibling;
+            }
+
+            function getNextVisibleSibling(el) {
+                let sibling = el.nextElementSibling;
+                while (sibling && sibling.classList.contains("hidden")) {
+                    sibling = sibling.nextElementSibling;
+                }
+                return sibling;
+            }
+
         </script>
     </body>
 </html>
