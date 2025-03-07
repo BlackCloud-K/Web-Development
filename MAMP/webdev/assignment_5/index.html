@@ -141,6 +141,8 @@
             <option value="summer">Summer</option>
             <option value="fall">Fall</option>
             <option value="winter">Winter</option>
+            <option value="Completed">Completed</option>
+            <option value="Not Completed">Not Completed</option>
         </select>
 
         <img id="button_add_event" src="images/add_button.png"></img>
@@ -177,7 +179,7 @@
         <div id="info" class="hidden">
             <h2 id="event_title" style="left: 10%; margin-top: 5px;">Event:</h2>
             <select id="completion_filter">
-                <option value="Not Completed">Not completed</option>
+                <option value="Not Completed">Not Completed</option>
                 <option value="Completed">Completed</option>
             </select>
             <p id="season">Season: </p>
@@ -306,6 +308,7 @@
                         completion.onchange = function(event){
                             el.dataset.completion = completion.value;
                             completion_mark.innerText = completion.value;
+                            change_season();
                         }
 
                         // reset acc time
@@ -365,9 +368,22 @@
             function change_season(){
                 const existing_items = document.querySelector("#existing_items").children;
                 let season_now = season_filter.value;
+                console.log(season_now);
                 for (let i of existing_items){
                     if (season_now == "show_all"){
                         i.classList.remove('hidden');
+                    } else if(season_now == "Completed"){
+                        if (i.dataset.completion == season_now){
+                            i.classList.remove('hidden');
+                        } else{
+                            i.classList.add('hidden');
+                        }
+                    } else if(season_now == "Not Completed"){
+                        if (i.dataset.completion == "Not Completed"){
+                            i.classList.remove('hidden');
+                        } else{
+                            i.classList.add('hidden');
+                        } 
                     } else{
                         if (i.dataset.season == season_now){
                             i.classList.remove('hidden');
