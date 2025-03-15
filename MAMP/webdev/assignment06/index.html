@@ -17,6 +17,9 @@
             #token_container img {
                 width: 100px;
             }
+            #restart{
+                margin: 10px;
+            }
         </style>
     </head>
     <body>
@@ -24,13 +27,25 @@
 
         <div id="panel_start">
             <p>Play a fast-paced game of memory and try and beat your best time</p>
+            <select id="difficulty">
+                <option value=2>Easy</option>
+                <option value=10>Medium</option>
+                <option value=15>Difficult</option>
+            </select>
             <button id="button_playgame">Play the Game</button>
         </div>
 
         <div id="panel_gameplaying" class="hidden">
-            <div>Time elapsed: <span id="time_elapsed">0</div>
+            <div style="margin-bottom: 10px;">Time elapsed: <span id="time_elapsed">0s</span></div>
             <div id="token_container"></div>
         </div>
+
+        <button id="back" class="hidden">
+            Back
+        </button>
+        <button id="restart" class="hidden">
+            Restart
+        </button>
 
         <div id="panel_gameover" class="hidden">
             <div>Your time: <span id="time_yourtime">0</span></div>
@@ -45,14 +60,29 @@
             const button_playgame = document.getElementById('button_playgame');
             const time_elapsed = document.getElementById('time_elapsed');
             const token_container = document.getElementById('token_container');
+            const restarter = document.getElementById('restart');
+            const difficulty = document.getElementById('difficulty');
+            const back_botton = document.getElementById('back');
 
             // set up global variables to keep track of what the user has clicked on 
             let token1 = false;
             let token2 = false;
 
-            // click the button to start the game
-            button_playgame.onclick = function(event) {
+            let time_record = [];
+            let best_record = Number.MAX_SAFE_INTEGER;;
+            let start_time = 0;
+            let finished_pairs = 0;
+            let show_time;
 
+            // click the button to re/start the game
+            button_playgame.onclick = set_game;
+            restarter.onclick = set_game;
+
+            if (localStorage.getItem('best_record')){
+                best_record = parseInt(localStorage.getItem('best_record'));
+            }
+
+            function set_game(){
                 // given: an array of image asset paths
                 const assets = ['snorlax.png', 'electrabuzz.png', 'chansey.png', 'oddish.png',
                     'pikachu.png', 'paras.png', 'arcanine.png', 'ponita.png',
@@ -67,17 +97,48 @@
 
                 panel_start.classList.add('hidden');
                 panel_gameplaying.classList.remove('hidden');
+                restarter.classList.remove('hidden');
+                back_botton.classList.remove('hidden');
 
                 // create the tiles for our game
                 // select 6 images at random and put them into a new array
-                const selectedImages = [];
-
-                for (let i = 0; i < 6 ; i++) {
-                    let index = parseInt( Math.random() * assets.length );
-                    selectedImages.push( assets[index] );
-                    selectedImages.push( assets[index] );
-                    assets.splice( index, 1 );
+                let selectedImages = [];
+                finished_pairs = 0;
+                
+                token_container.innerHTML = "";
+                if (show_time){
+                    clearInterval(show_time);
                 }
+
+                function generate_array(col){
+                    function shuffle(array) {
+                        for (let i = array.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [array[i], array[j]] = [array[j], array[i]];
+                        }
+                        return array;
+                    }
+                    
+                    if (col == 6){
+                        token_container.style.width = "400px";
+                    }
+                    if (col == 10){
+                        token_container.style.width = "500px";
+                    }
+                    if (col == 15){
+                        token_container.style.width = "600px";
+                    }
+
+                    for (let i = 0; i < col ; i++) {
+                        let index = parseInt( Math.random() * assets.length );
+                        selectedImages.push( assets[index] );
+                        selectedImages.push( assets[index] );
+                        assets.splice( index, 1 );
+                    }
+                    selectedImages = shuffle(selectedImages);
+                }
+                
+                generate_array(difficulty.value);
 
                 // create our tokens that the user can click on
                 for (let image of selectedImages) {
@@ -87,29 +148,50 @@
                     token_container.appendChild(el);
 
                     el.onclick = function(event) {
+                        if (token1 && token2){
+                            return
+                        }
                         // is this the user's first click?
                         if (token1 == false) {
                             el.src = el.dataset.secretimage;
                             token1 = el;   
 
-                            console.log("token 1:");
-                            console.log(token1);                 
+                            // console.log("token 1:");
+                            // console.log(token1);                 
                         }
 
                         // is this the second click?
                         else {
                             // are they the same?
+                            if (el == token1){
+                                return
+                            }
+
                             token2 = el;
                             el.src = el.dataset.secretimage;
 
-                            console.log("second click");
-                            console.log(token1);
-                            console.log(token2);
+                            // console.log("second click");
+                            // console.log(token1);
+                            // console.log(token2);
 
                             if (token1.dataset.secretimage == token2.dataset.secretimage) {
                                 // match!
                                 token1 = false;
                                 token2 = false;
+                                finished_pairs += 1;
+
+                                if (finished_pairs >= difficulty.value){
+                                    clearInterval(show_time);
+                                    let cur = Date.now();
+                                    spend_time = cur - start_time;
+                                    time_record.push(spend_time);
+                                    // console.log(spend_time);
+                                    console.log(time_record);
+                                    if (spend_time < best_record){
+                                        best_record = spend_time;
+                                        localStorage.setItem("best_record", spend_time)
+                                    }
+                                }
                             }
                             else {
                                 setTimeout( function() {
@@ -129,9 +211,20 @@
                     }
                 }
 
+                start_time = Date.now();
+                show_time = setInterval(function(){
+                    let cur = Date.now();
+                    time_elapsed.innerText = parseInt((cur - start_time) / 1000) + "s";
+                    // console.log(finished_pairs);
+                }, 300);
             }
 
-
+            back_botton.onclick = function(){
+                panel_start.classList.remove('hidden');
+                panel_gameplaying.classList.add('hidden');
+                restarter.classList.add('hidden');
+                back_botton.classList.add('hidden');
+            }
 
 
             /* TO-DO:
@@ -140,7 +233,7 @@
                 - allow the user to click on a token to reveal its face
                 - allow the user to click on a second token to check if the tokens are the same
             */
-            
+
         </script>
     </body>
 </html>
