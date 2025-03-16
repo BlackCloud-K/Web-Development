@@ -20,6 +20,18 @@
             #restart{
                 margin: 10px;
             }
+            #panel_gameover{
+                position: absolute;
+                top: 20%;
+                left: 37%;
+                background-color: white;
+                color: black;
+                padding: 40px;
+                padding-top: 20px;
+                box-sizing: border-box;
+                width: 250px;
+                height: 280px;
+            }
         </style>
     </head>
     <body>
@@ -48,8 +60,15 @@
         </button>
 
         <div id="panel_gameover" class="hidden">
-            <div>Your time: <span id="time_yourtime">0</span></div>
-            <div>Best time: <span id="time_besttime">0</span></div>
+            <h3 style="text-align: center;">Best Record</h3>
+            <div>Your time: <span id="time_yourtime">0ms</span></div>
+            <br>
+            <div>Best time: <span id="time_1">0ms</span></div>
+            <div>Second time: <span id="time_2">0ms</span></div>
+            <div>Third time: <span id="time_3">0ms</span></div>
+            <br>
+            <br>
+            <button id="restart2">Restart</button>
         </div>
 
         <script>
@@ -61,6 +80,7 @@
             const time_elapsed = document.getElementById('time_elapsed');
             const token_container = document.getElementById('token_container');
             const restarter = document.getElementById('restart');
+            const restarter2 = document.getElementById('restart2');
             const difficulty = document.getElementById('difficulty');
             const back_botton = document.getElementById('back');
 
@@ -68,15 +88,18 @@
             let token1 = false;
             let token2 = false;
 
-            let time_record = [];
-            let best_record = Number.MAX_SAFE_INTEGER;;
+            let time_record = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
+            let best_record = Number.MAX_SAFE_INTEGER;
             let start_time = 0;
             let finished_pairs = 0;
             let show_time;
+            const audio_correct = new Audio('images/correct.wav');
+            const audio_wrong = new Audio('images/wrong.wav');
 
             // click the button to re/start the game
             button_playgame.onclick = set_game;
             restarter.onclick = set_game;
+            restarter2.onclick = set_game;
 
             if (localStorage.getItem('best_record')){
                 best_record = parseInt(localStorage.getItem('best_record'));
@@ -176,16 +199,18 @@
 
                             if (token1.dataset.secretimage == token2.dataset.secretimage) {
                                 // match!
+                                audio_correct.play();
                                 token1 = false;
                                 token2 = false;
                                 finished_pairs += 1;
-
+                                
+                                // finished
                                 if (finished_pairs >= difficulty.value){
                                     clearInterval(show_time);
                                     let cur = Date.now();
                                     spend_time = cur - start_time;
-                                    time_record.push(spend_time);
-                                    // console.log(spend_time);
+                                    updateArray(spend_time);
+
                                     console.log(time_record);
                                     if (spend_time < best_record){
                                         best_record = spend_time;
@@ -194,6 +219,7 @@
                                 }
                             }
                             else {
+                                audio_wrong.play();
                                 setTimeout( function() {
                                     // the user didn't match :(
                                     token1.src = 'images/pokeball.png';
@@ -226,6 +252,20 @@
                 back_botton.classList.add('hidden');
             }
 
+            function updateArray(newNum) {
+                if (newNum >= time_record[time_record.length - 1]) {
+                    return -1;
+                }
+                
+                let index = 0;
+                while (index < time_record.length && newNum >= time_record[index]) {
+                    index++;
+                }
+                time_record.splice(index, 0, newNum);
+
+                time_record.pop();
+                return index;
+            }
 
             /* TO-DO:
                 - generate interface (start screen, play screen, game over screen)
