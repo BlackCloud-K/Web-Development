@@ -104,8 +104,8 @@
             let start_time = 0;
             let finished_pairs = 0;
             let show_time;
-            const audio_correct = new Audio('images/correct.wav');
-            const audio_wrong = new Audio('images/wrong.wav');
+            const audio_correct = new Audio('./images/correct.wav');
+            const audio_wrong = new Audio('./images/wrong.wav');
             let name_list = ["", "", ""];
 
             // click the button to re/start the game
@@ -193,7 +193,7 @@
                 // create our tokens that the user can click on
                 for (let image of selectedImages) {
                     const el = document.createElement('img');
-                    el.dataset.secretimage = `images/${image}`;
+                    el.dataset.secretimage = `./images/${image}`;
                     el.src = 'images/pokeball.png';
                     token_container.appendChild(el);
 
