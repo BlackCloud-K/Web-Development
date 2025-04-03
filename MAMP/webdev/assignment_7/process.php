@@ -3,6 +3,8 @@
     // grab the incoming data
     $food = $_GET['food'];
     $activity = $_GET['activity'];
+    $hobby = $_GET['hobby'];
+    $fear = $_GET['fear'];
 
     // make sure the user filled everything out
     if ($food == 'empty' || $activity == 'empty') {
@@ -39,6 +41,34 @@
         $homer++;
     }
     else if ($activity == 'lisa') {
+        $lisa++;
+    }
+    else {
+        header("Location: index.php?error=invalidcharacter");
+        exit();
+    }
+
+    if ($hobby == 'bart') {
+        $bart++;
+    }
+    else if ($hobby == 'homer') {
+        $homer++;
+    }
+    else if ($hobby == 'lisa') {
+        $lisa++;
+    }
+    else {
+        header("Location: index.php?error=invalidcharacter");
+        exit();
+    }
+
+    if ($fear == 'bart') {
+        $bart++;
+    }
+    else if ($fear == 'homer') {
+        $homer++;
+    }
+    else if ($fear == 'lisa') {
         $lisa++;
     }
     else {
