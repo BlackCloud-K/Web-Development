@@ -44,7 +44,7 @@
         <div id="panel_start">
             <p>Play a fast-paced game of memory and try and beat your best time</p>
             <select id="difficulty">
-                <option value=2>Easy</option>
+                <option value=6>Easy</option>
                 <option value=10>Medium</option>
                 <option value=15>Difficult</option>
             </select>
@@ -194,6 +194,7 @@
                 for (let image of selectedImages) {
                     const el = document.createElement('img');
                     el.dataset.secretimage = `./images/${image}`;
+                    el.dataset.checked = "no";
                     el.src = 'images/pokeball.png';
                     token_container.appendChild(el);
 
@@ -203,8 +204,10 @@
                         }
                         // is this the user's first click?
                         if (token1 == false) {
-                            el.src = el.dataset.secretimage;
-                            token1 = el;   
+                            if (el.dataset.checked == "no"){
+                                el.src = el.dataset.secretimage;
+                                token1 = el;   
+                            }
 
                             // console.log("token 1:");
                             // console.log(token1);                 
@@ -214,6 +217,10 @@
                         else {
                             // are they the same?
                             if (el == token1){
+                                return
+                            }
+
+                            if (el.dataset.checked == "yes"){
                                 return
                             }
 
@@ -227,6 +234,8 @@
                             if (token1.dataset.secretimage == token2.dataset.secretimage) {
                                 // match!
                                 audio_correct.play();
+                                token1.dataset.checked = "yes";
+                                token2.dataset.checked = "yes";
                                 token1 = false;
                                 token2 = false;
                                 finished_pairs += 1;
