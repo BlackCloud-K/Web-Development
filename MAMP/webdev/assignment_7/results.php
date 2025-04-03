@@ -2,16 +2,22 @@
 <html>
 <head>
     <style>
+        body {
+            margin-top: 20px;
+            margin-left: 50px;
+        }
         .result_container{
             border: 1px solid black;
             width: 400px;
-            height: 370px;
+            height: 330px;
         }
 
         .bar {
             height: 30px;
-            background-color: blue;
+            background-color: white;
             border: 1px solid black;
+            display: flex; 
+            align-items: center;
         }
     </style>
 </head>
@@ -64,19 +70,28 @@
 
     <h3>Total Submission: <?php print $total; ?></h3>
     <div class="result_container">
-        <p>Bart: <?php print round(($bart / $total) * 100);?>%</p>
-        <div class="bar" style="width: <?php print (($bart / $total) * 400) . "px";?>;"></div>
+        
+        <div class="bar" style="width: <?php print (($bart / $total) * 400) . "px";?>; margin-top: 40px; background-color: red;">
+            <p style="margin-left: 5px">Bart: <?php print round(($bart / $total) * 100);?>%</p>
+        </div>
 
-        <p>Homer <?php print round(($homer / $total) * 100);?>%</p>
-        <div class="bar" style="width: <?php print (($homer / $total) * 400) . "px";?>;"></div>
+        <div class="bar" style="width: <?php print (($homer / $total) * 400) . "px";?>; margin-top: 40px; background-color: yellow;">
+            <p style="margin-left: 5px">Homer <?php print round(($homer / $total) * 100);?>%</p>
+        </div>
+   
+        <div class="bar" style="width: <?php print (($lisa / $total) * 400) . "px";?>; margin-top: 40px; background-color: lightgreen;"">
+            <p style="margin-left: 5px">Lisa <?php print round(($lisa / $total) * 100);?>%</p>
+        </div>
 
-        <p>Lisa <?php print round(($lisa / $total) * 100);?>%</p>
-        <div class="bar" style="width: <?php print (($lisa / $total) * 400) . "px";?>;"></div>
-
-        <p>Marge <?php print round(($marge / $total) * 100);?>%</p>
-        <div class="bar" style="width: <?php print (($marge / $total) * 400) . "px";?>;"></div>
+        <div class="bar" style="width: <?php print (($marge / $total) * 400) . "px";?>; margin-top: 40px; background-color: lightblue;"">
+            <p style="margin-left: 5px">Marge <?php print round(($marge / $total) * 100);?>%</p>
+        </div>
     </div>
 
-    <a href="index.php">Back to the voting page</a>
-</body>
+    </body>
+    
+    <footer>
+        <hr style="border: none; border-top: 1px solid #ccc; margin-top: 40px;">
+        <a href="index.php">Back to the voting page</a>
+    </footer>
 </html>

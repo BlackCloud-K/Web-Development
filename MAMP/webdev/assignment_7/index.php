@@ -53,6 +53,15 @@
         <?php
             error_reporting(0);
 
+            $character = $_GET['character'];
+            $filename = "";
+            $reset = $_GET["reset"];
+            $stored = $_COOKIE["filename"];
+
+            if ((!$character) && ($stored)) {
+                $character = $stored;
+            }
+
             $error = $_GET['error'];
             if ($error) {
 
@@ -62,41 +71,39 @@
 
         <?php
             }
+
+            if ($character == 'bart') {
+                $filename = 'Bart.png';
+            }
+            else if ($character == 'lisa') {
+                $filename = 'Lisa.png';
+            }
+            else if ($character == 'homer') {
+                $filename = 'Homer.png';
+            }
+            else if ($character == 'marge') {
+                $filename = 'Marge.png';
+            }
+
+            if ($reset){
+                $character = "";
+                setcookie("filename", "");
+            }
         ?>
 
-        <p>Result: </p>
-        <div class="result">
+        <div class="result <?php 
+        
+            if ($character){
+                print "";
+            }else{
+                print "hidden";
+            }
+        
+        ?>">
             <?php
-
-                $character = $_GET['character'];
-                $filename = "";
-                $reset = $_GET["reset"];
-                $stored = $_COOKIE["filename"];
-
-                if ((!$character) && ($stored)) {
-                    $filename = $stored;
-                }
-
-                if ($character == 'bart') {
-                    $filename = 'Bart.png';
-                }
-                else if ($character == 'lisa') {
-                    $filename = 'Lisa.png';
-                }
-                else if ($character == 'homer') {
-                    $filename = 'Homer.png';
-                }
-                else if ($character == 'marge') {
-                    $filename = 'Marge.png';
-                }
-
-                if ($reset){
-                    $filename = "";
-                    setcookie("filename", "");
-                }
-
                 if ($filename) {
-                    setcookie("filename", $filename);
+                    setcookie("filename", $character);
+                    print "<h4> You are " . $character . "!</h4>";
                     print "<img src=images/$filename>";
                 }
             ?>
@@ -107,7 +114,7 @@
         <form method="get" action="" style="margin-top:10px" class="
         
         <?php
-            if ($filename){
+            if ($character){
                 print "";
             } else{
                 print "hidden";
@@ -122,7 +129,7 @@
         <form action="process.php" method="GET" class="question
         
         <?php
-            if ($filename){
+            if ($character){
                 print "hidden";
             } else{
                 print "";
@@ -131,7 +138,7 @@
         ?>
 
         ">
-
+        <div>Please answer the questions:</div>
         <div>
             Favorite food:</br>
             <select id="food" name="food">
@@ -176,8 +183,11 @@
 
             <input type="submit" value="Who am I" style="margin-top: 10px">
         </form>
-
-        <a href="results.php" style="margin-top: 10px;">Results</a>
         
     </body>
+
+    <footer>
+        <hr style="border: none; border-top: 1px solid #ccc; margin-top: 40px;">
+        <a href="results.php" style="margin-top: 10px;">See the result</a>
+    </footer>
 </html>
