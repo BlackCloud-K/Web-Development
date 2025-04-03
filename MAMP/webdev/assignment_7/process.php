@@ -7,7 +7,7 @@
     $fear = $_GET['fear'];
 
     // make sure the user filled everything out
-    if ($food == 'empty' || $activity == 'empty') {
+    if ($food == 'empty' || $activity == 'empty' || $hobby == 'empty' || $fear == 'empty') {
         // if not, generate an error message
         header("Location: index.php?error=missingstuff");
         exit();
@@ -18,6 +18,7 @@
     $bart = 0;
     $homer = 0;
     $lisa = 0;
+    $marge = 0;
 
     if ($food == 'bart') {
         $bart++;
@@ -27,6 +28,9 @@
     }
     else if ($food == 'lisa') {
         $lisa++;
+    }
+    else if ($food == 'marge') {
+        $marge++;
     }
     else {
         header("Location: index.php?error=invalidcharacter");
@@ -43,6 +47,9 @@
     else if ($activity == 'lisa') {
         $lisa++;
     }
+    else if ($activity == 'marge') {
+        $marge++;
+    }
     else {
         header("Location: index.php?error=invalidcharacter");
         exit();
@@ -56,6 +63,9 @@
     }
     else if ($hobby == 'lisa') {
         $lisa++;
+    }
+    else if ($hobby == 'marge') {
+        $marge++;
     }
     else {
         header("Location: index.php?error=invalidcharacter");
@@ -71,6 +81,9 @@
     else if ($fear == 'lisa') {
         $lisa++;
     }
+    else if ($fear == 'marge') {
+        $marge++;
+    }
     else {
         header("Location: index.php?error=invalidcharacter");
         exit();
@@ -80,23 +93,24 @@
     $filename = getcwd() . '/data/results.txt';
 
 
-    if ($bart >= $homer && $bart >= $lisa) {
-        // store the name of the character in our text file
+    if ($bart >= $homer && $bart >= $lisa && $bart >= $marge) {
         file_put_contents($filename, "bart\n", FILE_APPEND);
-
         header("Location: index.php?character=bart");
         exit();
     }
-    else if ($homer >= $bart && $homer >= $lisa) {
+    else if ($homer >= $bart && $homer >= $lisa && $homer >= $marge) {
         file_put_contents($filename, "homer\n", FILE_APPEND);
-
         header("Location: index.php?character=homer");
         exit();
     }
-    else {
+    else if ($lisa >= $bart && $lisa >= $homer && $lisa >= $marge) {
         file_put_contents($filename, "lisa\n", FILE_APPEND);
-
         header("Location: index.php?character=lisa");
+        exit();
+    }
+    else {
+        file_put_contents($filename, "marge\n", FILE_APPEND);
+        header("Location: index.php?character=marge");
         exit();
     }
 

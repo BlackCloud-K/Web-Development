@@ -86,6 +86,9 @@
                 else if ($character == 'homer') {
                     $filename = 'Homer.png';
                 }
+                else if ($character == 'marge') {
+                    $filename = 'Marge.png';
+                }
 
                 if ($reset){
                     $filename = "";
@@ -128,47 +131,53 @@
         ?>
 
         ">
-            <div>
-                Favorite food:</br>
-                <select id="food" name="food">
-                    <option value="empty">Select an option</option>
-                    <option value="bart">Pizza</option>
-                    <option value="homer">Cake</option>
-                    <option value="lisa">Apples</option>
-                </select>
-            </div>
-            <div>
-                Favorite activity:</br>
-                <select id="activity" name="activity">
-                    <option value="empty">Select an option</option>
-                    <option value="bart">Skateboard</option>
-                    <option value="homer">Sleep</option>
-                    <option value="lisa">Study</option>
-                </select>
-            </div>
-            <div>
-                Favorite hobby:</br>
-                <select id="hobby" name="hobby">
-                    <option value="empty">Select an option</option>
-                    <option value="bart">Skateboarding</option>
-                    <option value="homer">Eating donuts</option>
-                    <option value="lisa">Playing saxophone</option>
-                </select>
-            </div>
-            <div>
-                Biggest fear:</br>
-                <select id="fear" name="fear">
-                    <option value="empty">Select an option</option>
-                    <option value="bart">Getting caught by Principal Skinner</option>
-                    <option value="homer">Running out of beer</option>
-                    <option value="lisa">Climate change</option>
-                </select>
-            </div>
+
+        <div>
+            Favorite food:</br>
+            <select id="food" name="food">
+                <option value="empty">Select an option</option>
+                <option value="bart">Pizza</option>
+                <option value="homer">Cake</option>
+                <option value="lisa">Apples</option>
+                <option value="marge">Pancakes</option>
+            </select>
+        </div>
+        <div>
+            Favorite activity:</br>
+            <select id="activity" name="activity">
+                <option value="empty">Select an option</option>
+                <option value="bart">Skateboard</option>
+                <option value="homer">Sleep</option>
+                <option value="lisa">Study</option>
+                <option value="marge">Cleaning the house</option>
+            </select>
+        </div>
+        <div>
+            Favorite hobby:</br>
+            <select id="hobby" name="hobby">
+                <option value="empty">Select an option</option>
+                <option value="bart">Skateboarding</option>
+                <option value="homer">Eating donuts</option>
+                <option value="lisa">Playing saxophone</option>
+                <option value="marge">Painting</option>
+            </select>
+        </div>
+        <div>
+            Biggest fear:</br>
+            <select id="fear" name="fear">
+                <option value="empty">Select an option</option>
+                <option value="bart">Getting caught by Principal Skinner</option>
+                <option value="homer">Running out of beer</option>
+                <option value="lisa">Climate change</option>
+                <option value="marge">Family falling apart</option>
+            </select>
+        </div>
+
 
             <input type="submit" value="Who am I" style="margin-top: 10px">
         </form>
 
-        <a href="results.php">Results</a>
+        <a href="results.php" style="margin-top: 10px;">Results</a>
         
     </body>
 </html>
