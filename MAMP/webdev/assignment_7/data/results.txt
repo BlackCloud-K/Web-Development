@@ -28,3 +28,9 @@ homer
 bart
 homer
 lisa
+bart
+bart
+marge
+bart
+marge
+bart
