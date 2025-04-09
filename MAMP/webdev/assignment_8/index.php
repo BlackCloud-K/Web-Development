@@ -1,3 +1,7 @@
+<?php 
+    include "config.php";
+?>
+
 <!doctype html>
 <html>
     <head>
@@ -10,6 +14,7 @@
     </head>
     <body>
         <h1>Movie Database</h1>
+        <!-- <a href="config.php">test</a> -->
 
         <table border="1" width="100%">
             <tr>
@@ -21,36 +26,35 @@
 
             <?php
 
-// connect to our database!
-$db = new SQlite3('/home/databases/movies.db');
+                // connect to our database!
+                $db = new SQlite3($path);
 
-// use a SQL query to grab all movie records
-$sql = "SELECT id, title, year FROM movies ORDER BY title, year";
-$statement = $db->prepare($sql);
-$result = $statement->execute();
+                // use a SQL query to grab all movie records
+                $sql = "SELECT id, title, year FROM movies ORDER BY title, year";
+                $statement = $db->prepare($sql);
+                $result = $statement->execute();
 
-// render movie records into the table
-while ($row = $result->fetchArray()) {
+                // render movie records into the table
+                while ($row = $result->fetchArray()) {
 
-    $id = $row[0];
-    $title = $row[1];
-    $year = $row[2];
+                    $id = $row[0];
+                    $title = $row[1];
+                    $year = $row[2];
 
-    print "<tr>";
-    print "    <td>$title</td>";
-    print "    <td>$year</td>";
-    print "    <td>DELETE</td>";
-    print "</tr>";
-}
+                    print "<tr>";
+                    print "    <td>$title</td>";
+                    print "    <td>$year</td>";
+                    print "    <td>DELETE</td>";
+                    print "</tr>";
+                }
 
-$db->close();
-unset($db);
-
-
+                $db->close();
+                unset($db);
 
             ?>
 
         </table>
+    
 
     </body>
 </html>
