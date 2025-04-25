@@ -104,12 +104,10 @@
             }
             
         }
-        // if ($result != []){
-        //     if 
-        //     print("Validated");
-        // }
     }
-
+    else if($_GET['command'] == 'roll' && isset($_POST['username']) && isset($_POST['password'])){
+        $sql = '';
+    }
 
     // invalid command
     else {
