@@ -59,6 +59,11 @@
         let id = 0;
         let interactingFlag = false;
 
+        const system_commands = {
+            "/help": "Show available system commands",
+            "/quote": "Display a random inspirational quote"
+        }
+
         // login button
         panel_login_submit_button.addEventListener('click', function (e) {
             e.preventDefault();
@@ -73,7 +78,30 @@
             // NOTE: you will need to update this code to handle (1) new users and (2) returning users
             else {
                 username = panel_login_username_textbox.value;
-                panel_login.style.display = 'none'; /* need to use inline styles here due to display: flex */
+                password = panel_login_password_textbox.value;
+
+                performFetch({
+                    url: 'api.php?command=check_user',
+                    method: 'post',
+                    data: {
+                        username: username,
+                        password: password
+                    },
+
+                    // upon success (or error), unlock the text box and clear it for the next message
+                    success: function (data) {
+                        console.log(data);
+                        if (data == "validated" || data == "new user created"){
+                            panel_login.style.display = 'none'; /* need to use inline styles here due to display: flex */
+                        } else{
+                            panel_login_error_missinginfo.classList.add('hidden');
+                            panel_login_error_incorrect.classList.remove('hidden');
+                        }
+                    },
+                    error: function (error) {
+                        console.log("ERROR:", error);
+                    }
+                })
             }
         });
 
@@ -150,28 +178,52 @@
             // disable the text box so the user can't modify it while the request 
             // to save the message is being processed by the server
             message_input_textbox.disabled = true;
+            input_value = message_input_textbox.value;
+            // If input start from '/', check system command
+            if (input_value[0] == '/'){
+                let system_name = "Private Message";
+                let output = "";
 
-            // contact the server with our username and message
-            performFetch({
-                url: 'api.php?command=savemessage',
-                method: 'post',
-                data: {
-                    username: username,
-                    message: message_input_textbox.value
-                },
+                if (! (input_value in system_commands)){
+                    output = "Invalid command!"
 
-                // upon success (or error), unlock the text box and clear it for the next message
-                success: function (data) {
-                    console.log(data);
-                    message_input_textbox.disabled = false;
-                    message_input_textbox.value = '';
-                },
-                error: function (error) {
-                    console.log("ERROR:", error);
-                    message_input_textbox.disabled = false;
-                    message_input_textbox.value = '';
+                } else if(input_value == "/help"){
+                    for (i in system_commands){
+                        output = output + i + ": " + system_commands[i] + '\n';
+                    }
                 }
-            })
+                createMessage({
+                        username: system_name,
+                        message: output,
+                        privateMessage: true, // optional
+                    })
+
+                message_input_textbox.disabled = false;
+                message_input_textbox.value = '';
+            }
+            else{
+                // contact the server with our username and message
+                performFetch({
+                    url: 'api.php?command=savemessage',
+                    method: 'post',
+                    data: {
+                        username: username,
+                        message: message_input_textbox.value
+                    },
+
+                    // upon success (or error), unlock the text box and clear it for the next message
+                    success: function (data) {
+                        console.log(data);
+                        message_input_textbox.disabled = false;
+                        message_input_textbox.value = '';
+                    },
+                    error: function (error) {
+                        console.log("ERROR:", error);
+                        message_input_textbox.disabled = false;
+                        message_input_textbox.value = '';
+                    }
+                })
+            }
         });
 
 

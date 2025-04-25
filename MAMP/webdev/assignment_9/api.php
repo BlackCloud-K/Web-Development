@@ -6,7 +6,9 @@
     }
 
     // connect to our database
-    $path = '/home/databases';
+    // $path = '/home/databases';
+    $path = getcwd().'/databases';
+    $user_db = new SQLite3(($path.'/user.db'));
     $db = new SQLite3($path.'/chat.db');
 
     // API call to save a message to the 'messages' table
@@ -72,6 +74,40 @@
 
         // encode the object as a JSON string and send it to the client
         print json_encode($send_back);
+    }
+
+    else if ($_GET['command'] == 'check_user' && isset($_POST['username'] ) && isset($_POST['password'])) {
+        $sql = 'SELECT password FROM user WHERE username = :username';
+        $statement = $user_db->prepare($sql);
+        $statement->bindValue(':username', $_POST['username']);
+        $result = $statement->execute();
+        $row = $result->fetchArray(SQLITE3_ASSOC);
+        if ($row) {
+            if ($row['password'] == $_POST['password']) {
+                print("validated");
+            } else{
+                print("wrong password");
+            }
+
+        } else{
+            $sql = "INSERT INTO user (username, password) VALUES (:username, :password)";
+            $statement = $user_db->prepare($sql);
+            $statement->bindValue(':username', $_POST['username']);
+            $statement->bindValue(':password', $_POST['password']);
+            $result = $statement->execute();
+            $id = $user_db->lastInsertRowID();
+            if ($id){
+                print('new user created');
+            }
+            else{
+                print('new user sign up fialed');
+            }
+            
+        }
+        // if ($result != []){
+        //     if 
+        //     print("Validated");
+        // }
     }
 
 
