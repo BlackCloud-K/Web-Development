@@ -61,8 +61,19 @@
 
         const system_commands = {
             "/help": "Show available system commands",
-            "/quote": "Display a random inspirational quote"
+            "/quote": "Display a random inspirational quote",
+            "/roll": "Roll a 100 Sided Die",
+            "/rollhistory": "Display the 10 most recent die rolls"
         }
+
+        let quotes = [];
+
+        async function loadQuotes() {
+            const response = await fetch('./datasets/Database-Quotes-JSON/quotes.json');
+            quotes = await response.json();  
+            console.log("Quotes loaded:", quotes.length);
+        }
+        loadQuotes();
 
         // login button
         panel_login_submit_button.addEventListener('click', function (e) {
@@ -188,15 +199,21 @@
                     output = "Invalid command!"
 
                 } else if(input_value == "/help"){
+                    output = "Valid Command: \n"
                     for (i in system_commands){
-                        output = output + i + ": " + system_commands[i] + '\n';
+                        output = output + "\t" + i + ": " + system_commands[i] + '\n';
                     }
+                } else if (input_value == "/quote"){
+                    generate_quote();
                 }
-                createMessage({
-                        username: system_name,
-                        message: output,
-                        privateMessage: true, // optional
-                    })
+
+                if (output){
+                    createMessage({
+                            username: system_name,
+                            message: output,
+                            privateMessage: true, // optional
+                        })
+                }
 
                 message_input_textbox.disabled = false;
                 message_input_textbox.value = '';
@@ -225,6 +242,33 @@
                 })
             }
         });
+
+
+        function generate_quote(){
+            let len = quotes.length
+            let rand_n = Math.floor((Math.random() * len))
+            let q = quotes[rand_n]
+            let output = username + " requested a random quote! \n \n"
+            output += q['quoteText'] + '\n -' + q['quoteAuthor']
+            // console.log(output)
+
+            performFetch({
+                    url: 'api.php?command=savemessage',
+                    method: 'post',
+                    data: {
+                        username: username,
+                        message: output
+                    },
+
+                    // upon success (or error), unlock the text box and clear it for the next message
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (error) {
+                        console.log("ERROR:", error);
+                    }
+                })
+        }
 
 
         // function: createMessage
