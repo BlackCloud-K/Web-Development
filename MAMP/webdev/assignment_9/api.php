@@ -1,4 +1,8 @@
 <?php
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+    
 
     if (!isset($_GET['command'])) {
         print "error";
@@ -9,6 +13,7 @@
     // $path = '/home/databases';
     $path = getcwd().'/databases';
     $user_db = new SQLite3(($path.'/user.db'));
+    $dice_db = new SQLite3(($path.'/dice.db'));
     $db = new SQLite3($path.'/chat.db');
 
     // API call to save a message to the 'messages' table
@@ -105,8 +110,40 @@
             
         }
     }
-    else if($_GET['command'] == 'roll' && isset($_POST['username']) && isset($_POST['password'])){
-        $sql = '';
+    else if($_GET['command'] == 'roll' && isset($_POST['username'])){
+        $rand_num = rand(1, 100);
+        $sql = "INSERT INTO dice_rolls (username, roll_result) VALUES (:username, :roll_result)";
+        $statement = $dice_db->prepare($sql);
+        $statement->bindValue(":username", $_POST["username"]);
+        $statement->bindValue(":roll_result", $rand_num);
+        $result = $statement->execute();
+        if ($result){
+            print(''. $rand_num);
+        } else{
+            print("roll failed");
+        }
+    }
+    else if($_GET["command"] == "rollhistory" && isset($_POST['count'])){
+        $count = isset($_POST['count']) && is_numeric($_POST['count']) ? intval($_POST['count']) : 10;
+        $count = max(1, min($count, 100));
+        $sql = "SELECT username, roll_result, timestamp FROM dice_rolls ORDER BY timestamp DESC LIMIT $count";
+        $statement = $dice_db->prepare($sql);
+        $result = $statement->execute();
+
+        header('Content-Type: application/json');
+        $send_back = [];
+        $send_back['rolls'] = [];
+
+        while ($row = $result->fetchArray(SQLITE3_NUM)) {
+            $record = [];
+            $record['username'] = $row[0];
+            $record['roll_result'] = $row[1];
+            $record['timestamp'] = $row[2];
+            
+            array_push($send_back['rolls'], $record);
+        }
+
+        print json_encode($send_back);
     }
 
     // invalid command
