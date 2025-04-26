@@ -61,19 +61,29 @@
 
         const system_commands = {
             "/help": "Show available system commands",
-            "/quote": "Display a random inspirational quote",
-            "/roll": "Roll a 100 Sided Die",
-            "/rollhistory X": "Display the X most recent die rolls. X defaults to 10."
+            "/magic8ball <question>": "Shook a magic 8 ball.",
+            "/quote": "Display a random inspirational quote.",
+            "/roll": "Roll a 100 Sided Die.",
+            "/rollhistory <X>": "Display the X most recent die rolls. X defaults to 10.",
+            "/define <word>": "Get the definition of a word from the dictionary."
         }
 
         let quotes = [];
 
         async function loadQuotes() {
-            const response = await fetch('./datasets/Database-Quotes-JSON/quotes.json');
+            let response = await fetch('./datasets/Database-Quotes-JSON/quotes.json');
             quotes = await response.json();  
             console.log("Quotes loaded:", quotes.length);
         }
         loadQuotes();
+
+        let magicballs_list = [];
+        async function loadmagicball() {
+            let response = await fetch('./datasets/Magic-8-Ball/magic8ball.json');
+            magicballs_list = await response.json();  
+            console.log("magic8ball loaded:", magicballs_list.length);
+        }
+        loadmagicball();
 
         // login button
         panel_login_submit_button.addEventListener('click', function (e) {
@@ -196,7 +206,7 @@
                 let output = "";
 
                 if(input_value == "/help"){
-                    output = "Valid Command: \n"
+                    output = "Valid Commands: \n"
                     for (i in system_commands){
                         output = output + "\t" + i + ": " + system_commands[i] + '\n';
                     }
@@ -212,6 +222,12 @@
                     if (comm === "/rollhistory") {
                         // console.log("rollhistory")
                         rollhistory(comm, arg);
+                    }
+                    else if (comm === "/define") {
+                        define_word(parts, arg);
+                    }
+                    else if (comm === "/magic8ball") {
+                        magic8ball(parts);
                     }
                     else {
                         output = "Invalid command!"
@@ -281,9 +297,44 @@
                 })
         }
 
+        function magic8ball(parts){
+            let question = parts.slice(1).join(" ").trim();
+            if (!question){
+                createMessage({
+                    username: "Private Message",
+                    message: "You must supply a question for the magic 8 ball.",
+                    privateMessage: true
+                });
+                return;
+            }
+
+            let len = magicballs_list.length
+            let rand_n = Math.floor((Math.random() * len))
+            let answer = magicballs_list[rand_n]
+            let output = username + " just shook the magic 8 ball! \n \n"
+            output += "Question: " + question + '\nAnswer: ' + answer
+            // console.log(output)
+
+            performFetch({
+                url: 'api.php?command=savemessage',
+                method: 'post',
+                data: {
+                    username: username,
+                    message: output
+                },
+
+                // upon success (or error), unlock the text box and clear it for the next message
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (error) {
+                    console.log("ERROR:", error);
+                }
+            })
+        }
+
 
         function roll(){
-
             performFetch({
                     url: 'api.php?command=roll',
                     method: 'post',
@@ -343,7 +394,7 @@
                     count: count
                 },
                 success: function(data) {
-                    console.log(data); 
+                    // console.log(data); 
 
                     let jsonData = JSON.parse(data);
 
@@ -378,6 +429,57 @@
                     console.log("ERROR:", error);
                 }
             });
+        }
+
+
+        async function define_word(parts, arg){
+            if (parts.length === 1) {
+                createMessage({
+                    username: "Private Message",
+                    message: "You must supply a word to define!",
+                    privateMessage: true
+                });
+            } else if (parts.length > 2) {
+                createMessage({
+                    username: "Private Message",
+                    message: "You can only define a single word at a time!",
+                    privateMessage: true
+                });
+            } else {
+                let word = arg;
+                url = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
+                let response = await fetch(url);
+                let data = await response.json();
+                if (!Array.isArray(data)) {
+                    createMessage({
+                        username: "Private Message",
+                        message: "Definition not found.",
+                        privateMessage: true
+                    });
+                    return;
+                }
+
+                const part = data[0].meanings[0].partOfSpeech;
+                const def = data[0].meanings[0].definitions[0].definition;
+                const output = `${username} requested a word definition!\n\n${word} (${part}): ${def}`;
+
+                performFetch({
+                    url: 'api.php?command=savemessage',
+                    method: 'post',
+                    data: {
+                        username: username,
+                        message: output
+                    },
+
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (error) {
+                        console.log("ERROR:", error);
+                    }
+                })
+                // console.log(arg);
+            }
         }
 
         // function: createMessage

@@ -10,7 +10,7 @@
     }
 
     // connect to our database
-    // $path = '/home/databases';
+    // $path = '/home/yn2179/databases/assignment_9';
     $path = getcwd().'/databases';
     $user_db = new SQLite3(($path.'/user.db'));
     $dice_db = new SQLite3(($path.'/dice.db'));
