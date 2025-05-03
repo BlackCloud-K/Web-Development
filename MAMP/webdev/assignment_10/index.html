@@ -13,6 +13,13 @@
 
     <!-- Load in our helpers library, which lets us make fetch requests -->
     <script src="helpers.js"></script>
+
+    <style>
+        .completed {
+            opacity: 0.5;
+            background-color: rgb(127, 249, 255);
+        }
+    </style>
 </head>
 
 <body>
@@ -25,7 +32,7 @@
         <!-- Toolbar -->
         <div class="toolbar">
             <button class="primary" @click="showAddNewItemPanel">Add Item</button>
-            <button class="primary">Save To-Do List</button>
+            <button class="primary" @click="saveToDoList">Save To-Do List</button>
         </div>
 
 
@@ -51,7 +58,7 @@
                 <select id="itemCategory" v-model="addNewItemCategory">
 
                     <!-- Sample category, replace with your own dynamically -->
-                    <option v-for="(item, index) in allCategories" :key="item" value="item">{{item}}</option>
+                    <option v-for="(color_select, categoryName) in categories" :key="categoryName" :value="categoryName">{{categoryName}}</option>
                     <!-- 
                     <option value="Sample">Sample</option>
                     -->
@@ -64,31 +71,31 @@
 
         <!-- Panel: Edit Existing Item -->
         <div class="panel" id="panelEditItem" v-if="isEditPanelVisible">
-            <button class="close-button light">✕</button>
+            <button class="close-button light" @click="hideEditPanel">✕</button>
             <h2>Edit Item</h2>
 
-            <div class="error-message">
+            <div class="error-message" v-if="isEditPanelErrorMessageVisible">
                 Please fill out the form fully.
             </div>
 
             <div class="form-row">
                 <label for="editTitle">Title</label>
-                <input type="text" id="editTitle">
+                <input type="text" id="editTitle" v-model="editTitle">
             </div>
             <div class="form-row">
                 <label for="editDescription">Description</label>
-                <textarea id="editDescription" rows="3"></textarea>
+                <textarea id="editDescription" rows="3" v-model="editDescription"></textarea>
             </div>
             <div class="form-row">
                 <label for="editCategory">Category</label>
-                <select id="editCategory">
+                <select id="editCategory" v-model="editCategory">
 
                     <!-- Sample category, replace with your own dynamically -->
-                    <option value="Sample">Sample</option>
+                    <option v-for="(color_select, categoryName) in categories" :key="categoryName" :value="categoryName">{{categoryName}}</option>
 
                 </select>
             </div>
-            <button class="secondary">Update Item</button>
+            <button class="secondary" @click="saveEditItem">Update Item</button>
         </div>
 
 
@@ -97,18 +104,18 @@
 
             <!-- Sample to-do list item, replace with your own dynamically -->
 
-            <div class="todo-card" v-for="(item, index) in existingItems" :key="index">
-                <span class="category-tag">Uncategorized</span>
+            <div class="todo-card" v-for="(item, index) in existingItems" :key="index" :class="{completed: item.complete}">
+                <span class="category-tag" :style="{backgroundColor: categories[item.category]}">{{item.category}}</span>
                 <h3>{{item.title}}</h3>
                 <p>{{item.description}}</p>
 
                 <div class="card-actions">
-                    <button class="light">Edit</button>
-                    <button class="light">
-                        <span>Mark as Active</span>
-                        <span>Mark as Complete</span>
+                    <button class="light" v-if="!item.complete" @click="showEditPanel(index)">Edit</button>
+                    <button class="light" @click="toggleCompletion(index)">
+                        <span v-if="item.complete">Mark as Active</span>
+                        <span v-else>Mark as Complete</span>
                     </button>
-                    <button class="light">Delete</button>
+                    <button class="light" @click="deleteItem(index)">Delete</button>
                 </div>
             </div>
 
@@ -147,10 +154,16 @@
                     isEditPanelVisible: false,
                     isExistingToDoListPanel: true,
                     isAddPanelErrorMessageVisible: false,
+                    isEditPanelErrorMessageVisible: false,
 
                     addNewItemTitle: '',
                     addNewItemDescription: '',
                     addNewItemCategory: '',
+
+                    editTitle: '',
+                    editDescription: '',
+                    editCategory: '',
+                    editItemIndex: null,
                     
                     allCategories: ['Personal', 'School', 'Home', 'Work', 'Play'],
 
@@ -158,9 +171,16 @@
                         {
                             title: 'Walk the dog',
                             description: 'Take the dog out after work',
-                            category: 'Personal'
+                            category: 'Personal',
+                            complete: false
                         }
-                    ]           
+                    ],
+                    
+                    categories: {
+                        'Uncategorized': 'grey',
+                        'Personal': 'blue',
+                        'Work': 'orange'
+                    }
                 }
             
             },
@@ -191,19 +211,95 @@
                     this.existingItems.push({
                         title: this.addNewItemTitle,
                         description: this.addNewItemDescription,
-                        category: this.addNewItemCategory
+                        category: this.addNewItemCategory,
+                        complete: false
                     });
 
                     // hide the panel
                     this.isAddPanelVisible = false;
                     this.isExistingToDoListPanel = true;                
+                },
+
+                deleteItem: function(index){
+                    this.existingItems.splice(index, 1);
+                },
+
+                toggleCompletion: function(index){
+                    this.existingItems[index].complete = !this.existingItems[index].complete;
+                },
+
+                showEditPanel: function(index) {
+                    this.isEditPanelVisible = true;
+                    this.isExistingToDoListPanel = false;
+
+                    this.editItemIndex = index;
+                    item = this.existingItems[index];
+                    this.editTitle = item.title;
+                    this.editDescription = item.description;
+                    this.editCategory = item.category;
+                },
+
+                hideEditPanel: function() {
+                    this.isEditPanelVisible = false;
+                    this.isExistingToDoListPanel = true;
+                    this.editItemIndex = null;
+                },
+
+                saveEditItem: function(){
+                    if (!this.editTitle || !this.editDescription || !this.editCategory) {
+                        this.isEditPanelErrorMessageVisible = true;
+                        return;
+                    }
+
+                    this.existingItems[this.editItemIndex].title = this.editTitle;
+                    this.existingItems[this.editItemIndex].description = this.editDescription;
+                    this.existingItems[this.editItemIndex].category = this.editCategory;
+
+                    this.hideEditPanel();
+                    this.isEditPanelErrorMessageVisible = false;
+                },
+
+                saveToDoList: function(){
+                    const jsonData = JSON.stringify(this.existingItems);
+
+                    performFetch({
+                        url: 'save_todo_list.php',
+                        method: 'POST',
+                        data: { todoList: jsonData },
+                        success: (response) => {
+                            console.log('Save success:', response);
+                        },
+                        error: (err) => {
+                            console.error('Save failed:', err);
+                        }
+                    });
+                
                 }
+            },
             
+            mounted() {
+                console.log('mounted() triggered, fetching...');
+                performFetch({
+                    url: 'get_todo_list.php',
+                    method: 'GET',
+                    data: {},
+                    success: (data) => {
+                        try {
+                            this.existingItems = JSON.parse(data);
+                            console.log(this.existingItems)
+                        } catch (e) {
+                            console.warn('Data parse failed, fallback to empty list.');
+                            this.existingItems = [];
+                        }
+                    },
+                    error: (err) => {
+                        console.warn('No saved file or fetch failed, fallback to empty list.');
+                        this.existingItems = [];
+                    }
+                });
             }
-    
         
         }).mount("#app");
-
     </script>
 
 </body>
