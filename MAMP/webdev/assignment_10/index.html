@@ -179,7 +179,9 @@
                     categories: {
                         'Uncategorized': 'grey',
                         'Personal': 'blue',
-                        'Work': 'orange'
+                        'Work': 'orange',
+                        'school': 'green',
+                        'home': 'brown'
                     }
                 }
             
@@ -194,7 +196,11 @@
 
                 hideAddNewItemPanel: function() {
                     this.isAddPanelVisible = false;
-                    this.isExistingToDoListPanel = true;                
+                    this.isExistingToDoListPanel = true;
+                    
+                    this.addNewItemTitle = '';
+                    this.addNewItemDescription = '';
+                    this.addNewItemCategory = '';
                 },
 
                 saveNewItem: function() {
@@ -216,6 +222,9 @@
                     });
 
                     // hide the panel
+                    this.addNewItemTitle = '';
+                    this.addNewItemDescription = '';
+                    this.addNewItemCategory = '';
                     this.isAddPanelVisible = false;
                     this.isExistingToDoListPanel = true;                
                 },
@@ -276,7 +285,7 @@
                 
                 }
             },
-            
+
             mounted() {
                 console.log('mounted() triggered, fetching...');
                 performFetch({
